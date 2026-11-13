@@ -1,7 +1,10 @@
 name: Build Windows app
 
 on:
-  workflow_dispatch:   # adds a "Run workflow" button in the Actions tab
+  workflow_dispatch:   # "Run workflow" button in the Actions tab
+
+permissions:
+  contents: write      # needed to create a release
 
 jobs:
   build:
@@ -21,8 +24,9 @@ jobs:
           -p:EnableCompressionInSingleFile=true
           -o publish
 
-      - name: Upload
-        uses: actions/upload-artifact@v4
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
         with:
-          name: Qlix-windows
-          path: publish/Qlix.exe
+          tag_name: v1.0.${{ github.run_number }}
+          name: Qlix for Windows v1.0.${{ github.run_number }}
+          files: publish/Qlix.exe
